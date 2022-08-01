@@ -1,0 +1,19 @@
+#!/bin/bash
+#SBATCH --time=48:00:00
+#SBATCH --nodes=1 --ntasks-per-node=1
+#SBATCH --account=PYS0226
+#
+
+source /users/PYS0226/pg123/.bash_profile
+wc /fs/scratch/PYS0226/pg123/GSS2667HomeMicrobiome/org/*.fastq >/fs/scratch/PYS0226/pg123/GSS2667HomeMicrobiome/count/org.count
+wc /fs/scratch/PYS0226/pg123/GSS2667HomeMicrobiome/merge/*.fastq >/fs/scratch/PYS0226/pg123/GSS2667HomeMicrobiome/count/merge.count
+
+wc /fs/scratch/PYS0226/pg123/GSS2667HomeMicrobiome/merge2/*.fastq >/fs/scratch/PYS0226/pg123/GSS2667HomeMicrobiome/count/merge2.count
+wc /fs/scratch/PYS0226/pg123/GSS2667HomeMicrobiome/result/*.fastq >/fs/scratch/PYS0226/pg123/GSS2667HomeMicrobiome/count/result.count
+#wc /fs/scratch/PYS0226/pg123/GSS2667HomeMicrobiome/sortmerna/*.fastq >/fs/scratch/PYS0226/pg123/GSS2667HomeMicrobiome/count/sortmerna.count
+cd /fs/scratch/PYS0226/pg123/GSS2667HomeMicrobiome/count/
+#perl /users/PYS0226/pg123/bin/get_count_from_wc.pl sortmerna.count>sortmerna.reads
+perl /users/PYS0226/pg123/bin/get_count_from_wc.pl result.count>result.reads
+perl /users/PYS0226/pg123/bin/get_count_from_wc.pl merge2.count>merge2.reads
+perl /users/PYS0226/pg123/bin/get_count_from_wc.pl org.count>org.reads
+perl /users/PYS0226/pg123/bin/get_count_from_wc.pl merge.count>merge.reads

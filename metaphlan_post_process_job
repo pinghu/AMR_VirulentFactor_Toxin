@@ -1,0 +1,18 @@
+ls *.profile > ../profile.list
+
+perl ~/bin/seperate_profile.pl ../profile.list > ../profile.summary
+
+python ~/pkg/metaphlan2_old/utils/merge_metaphlan_tables.py ./relative_abundance/*.profile > metaphlan.relab
+
+python ~/pkg/metaphlan2_old/utils/merge_metaphlan_tables.py ./estimated_number_of_reads_from_the_clade/*.profile > metaphlan.estimated_number
+
+python ~/pkg/metaphlan2_old/utils/merge_metaphlan_tables.py ./coverage/*.profile > metaphlan.coverage
+
+python ~/pkg/metaphlan2_old/utils/merge_metaphlan_tables.py ./average_genome_length_in_the_clade/*.profile > metaphlan.average_genome_length_in_the _clade
+
+python ~/pkg/metaphlan2_old/utils/merge_metaphlan_tables.py ./average_genome_length_in_the_clade/*.profile > metaphlan.average_genome_len
+
+perl ~/bin/seperate_level.pl metaphlan.relab 
+
+perl ~/bin/seperate_kingdom.pl metaphlan.relab 
+
