@@ -1,0 +1,190 @@
+8-15-2022 Monday 
+(1) integrate all the virulent factor information
+
+########Look at the GSS2667 Home Study####################
+ping@stella:/media/BioData/GSS2667_Home Microbiome/Bioinformatics/analysisPing20220316/shortbred$
+
+cd /media/BioData/GSS2667_Home Microbiome/Bioinformatics/analysisPing20220316/shortbred
+
+ls *VF.txt > /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2667.VF.list
+
+ls *CARD.txt > /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2667.CARD.list
+
+perl ~/bin/combine_1col_from_multipledata.pl /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2667.VF.list 3 >/mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2667.VF.Hits
+
+perl ~/bin/combine_1col_from_multipledata.pl /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2667.VF.list 2 >/mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2667.VF.count
+
+perl ~/bin/combine_1col_from_multipledata.pl /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2667.VF.list 4 >/mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2667.VF.TotMarker
+
+perl ~/bin/combine_1col_from_multipledata.pl /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2667.CARD.list 3 >/mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2667.CARD.Hits
+perl ~/bin/combine_1col_from_multipledata.pl /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2667.CARD.list 2 >/mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2667.CARD.Count
+perl ~/bin/combine_1col_from_multipledata.pl /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2667.CARD.list 4 >/mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2667.CARD.TotMarker
+
+
+#########################
+
+ping@stella:/media/BioData/GSS2769_MG_Shower_Microbial_Community/bioinformatics/shortbred$ ls *VF.txt > /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2769.VF.list
+
+ ls *CARD.txt > /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2769.CARD.list
+perl ~/bin/combine_1col_from_multipledata.pl /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2769.VF.list 2 >/mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2769.VF.Count
+
+perl ~/bin/combine_1col_from_multipledata.pl /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2769.CARD.list 3 >/mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2769.CARD.Hits
+
+perl ~/bin/combine_1col_from_multipledata.pl /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2769.VF.list 3 >/mnt/G6_2D/project/AMR_VirulentFactor/shortbred/GSS2769.VF.Hits
+
+
+#####clean up GSS2457 Gladiator NGS_VOX2 and Vox1
+
+#######shortbred
+ls *CARD.txt > CARD.list
+ls *VF.txt > VF.list
+perl /home/ping/bin/combine_1col_from_multipledata.pl CARD.list 3 > CARD.hit
+perl /home/ping/bin/combine_1col_from_multipledata.pl CARD.list 2 > CARD.count
+perl /home/ping/bin/combine_1col_from_multipledata.pl VF.list 2 > VF.count
+perl /home/ping/bin/combine_1col_from_multipledata.pl VF.list 3 > VF.hit
+Rscript /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/testVF.R CARD.count
+Rscript /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/testVF.R CARD.hit
+Rscript /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/testVF.R VF.hit
+Rscript /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/testVF.R VF.count
+mv *.filter10 ../
+#####salmon#######
+ls *.clean_quant.sf > list
+perl /home/ping/bin/combine_1col_from_multipledata.pl list 5 > SLTS.NumReads
+perl /home/ping/bin/combine_1col_from_multipledata.pl list 4 > SLTS.TPM
+Rscript /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/testVF.R SLTS.TPM
+Rscript /mnt/G6_2D/project/AMR_VirulentFactor/shortbred/testVF.R SLTS.NumReads
+mv *.filter10 ../
+#########################################
+
+source /home/ping/.bashrc
+conda activate biobakery3
+cd metaphlann3
+ls  *.profile > list
+perl /home/ping/bin/seperate_profile3.pl list  1>summary.1 2>summary.2
+python /home/ping/bin/merge_metaphlan2_tables.py ./relative_abundance/*.profile > metaphlan.relab
+python /home/ping/bin/merge_metaphlan2_tables.py ./estimated_number_of_reads_from_the_clade/*.profile > metaphlan.estimated_count
+python /home/ping/bin/merge_metaphlan2_tables.py ./coverage/*.profile > metaphlan.coverage
+python /home/ping/bin/merge_metaphlan2_tables.py ./tax_id/*.profile > metaphlan.tax_id
+perl /home/ping/bin/filter_ave_10.pl metaphlan.estimated_count
+perl /home/ping/bin/select_data.pl metaphlan.estimated_count 1 metaphlan.estimated_count.10filter >metaphlan.estimated_count.filtered
+
+
+
+perl /home/ping/bin/seperate_level.pl  metaphlan.estimated_count
+perl /home/ping/bin/seperate_kingdom.pl metaphlan.estimated_count
+perl /home/ping/bin/seperate_level.pl metaphlan.estimated_count.bacteria
+
+perl /home/ping/bin/seperate_level.pl  metaphlan.relab
+perl /home/ping/bin/seperate_kingdom.pl metaphlan.relab
+perl /home/ping/bin/seperate_level.pl metaphlan.relab.bacteria
+
+perl /home/ping/bin/select_data.pl metaphlan.relab 1 metaphlan.estimated_count.filtered >metaphlan.relab10
+##########################################
+cd ../humann3/
+
+humann_join_tables --input ./ --output pathabundance.tsv  --file_name pathabundance.tsv
+humann_join_tables --input ./ --output pathcoverage.tsv  --file_name pathcoverage.tsv
+humann_join_tables --input ./ --output genefamily.tsv  --file_name genefamilies.tsv
+perl /home/ping/bin/filter_ave_10.pl pathabundance.tsv
+
+perl /home/ping/bin/get_top_contributor.pl pathabundance.tsv >pathabundance.contributor&
+grep -v "|" pathabundance.tsv|grep -v "UNINTEGRATED"|grep -v "UNMAPPED" |sed -e 's|["\/'\''#,]||g' >pathabundance.community.tsv
+humann_renorm_table --input pathabundance.community.tsv --units relab --output pathabundance.community.relab
+perl /home/ping/bin/select_data.pl pathabundance.community.relab 1 pathabundance.tsv.10filter >pathabundance.community.relab10
+
+
+grep -v "|" pathcoverage.tsv |  grep -v "UNINTEGRATED"|grep -v "UNMAPPED" |sed -e 's|["\/'\''#,]||g'  >pathcoverage.community.tsv
+
+grep -v "|" genefamily.tsv  |grep -v "UNMAPPED"|sed -e 's|["\/'\''#,]||g' >genefamily.community.tsv
+humann_renorm_table --input genefamily.community.tsv --units relab --output genefamily.community.relab
+perl /home/ping/bin/get_top_contributor.pl genefamily.tsv >genefamily.contributor&
+
+humann_regroup_table -i genefamily.tsv -g uniref90_go -o genefamily.uniref90_go
+humann_regroup_table -i genefamily.tsv -g uniref90_ko -o genefamily.uniref90_ko
+humann_regroup_table -i genefamily.tsv -g uniref90_rxn -o genefamily.uniref90_rxn
+humann_regroup_table -i genefamily.tsv -g uniref90_level4ec -o genefamily.uniref90_level4ec
+humann_regroup_table -i genefamily.tsv -g uniref90_pfam -o genefamily.uniref90_pfam
+humann_regroup_table -i genefamily.tsv -g uniref90_eggnog -o genefamily.uniref90_eggnog
+
+grep -v "|" genefamily.uniref90_go| grep -v "UNINTEGRATED"|grep -v "UNMAPPED"|grep -v "UNGROUPED" |sed -e 's|["\/'\''#]||g'  >genefamily.community.uniref90_go
+grep -v "|" genefamily.uniref90_ko| grep -v "UNINTEGRATED"|grep -v "UNMAPPED"|grep -v "UNGROUPED" | sed -e 's|["\/'\''#]||g'  >genefamily.community.uniref90_ko
+grep -v "|" genefamily.uniref90_rxn| grep -v "UNINTEGRATED"|grep -v "UNMAPPED" |grep -v "UNGROUPED" |sed -e 's|["\/'\''#]||g'  >genefamily.community.uniref90_rxn
+grep -v "|" genefamily.uniref90_level4ec| grep -v "UNINTEGRATED"|grep -v "UNMAPPED" |grep -v "UNGROUPED" |sed -e 's|["\/'\''#]||g'  >genefamily.community.uniref90_level4ec
+grep -v "|" genefamily.uniref90_pfam| grep -v "UNINTEGRATED"|grep -v "UNMAPPED" |grep -v "UNGROUPED" |sed -e 's|["\/'\''#]||g'  >genefamily.community.uniref90_pfam
+grep -v "|" genefamily.uniref90_eggnog| grep -v "UNINTEGRATED"|grep -v "UNMAPPED" |grep -v "UNGROUPED" |sed -e 's|["\/'\''#]||g'  >genefamily.community.uniref90_eggnog
+
+
+
+perl /home/ping/bin/get_top_contributor.pl genefamily.uniref90_go >genefamily.uniref90_go.contributor
+perl /home/ping/bin/get_top_contributor.pl genefamily.uniref90_ko >genefamily.uniref90_ko.contributor
+perl /home/ping/bin/get_top_contributor.pl genefamily.uniref90_level4ec >genefamily.uniref90_level4ec.contributor
+perl /home/ping/bin/get_top_contributor.pl genefamily.uniref90_pfam >genefamily.uniref90_pfam.contributor
+perl /home/ping/bin/get_top_contributor.pl genefamily.uniref90_eggnog >genefamily.uniref90_eggnog.contributor
+perl /home/ping/bin/get_top_contributor.pl genefamily.uniref90_rxn >genefamily.uniref90_rxn.contributor
+
+
+humann_renorm_table --input genefamily.community.uniref90_go --units relab --output genefamily.community.uniref90_go.relab
+humann_renorm_table --input genefamily.community.uniref90_ko --units relab --output genefamily.community.uniref90_ko.relab
+humann_renorm_table --input genefamily.community.uniref90_rxn --units relab --output genefamily.community.uniref90_rxn.relab
+humann_renorm_table --input genefamily.community.uniref90_level4ec --units relab --output genefamily.community.uniref90_level4ec.relab
+humann_renorm_table --input genefamily.community.uniref90_pfam --units relab --output genefamily.community.uniref90_pfam.relab
+humann_renorm_table --input genefamily.community.uniref90_eggnog --units relab --output genefamily.community.uniref90_eggnog.relab
+#######################################################################
+perl /home/ping/bin/filter_ave_10.pl pathabundance.tsv
+perl /home/ping/bin/select_data.pl pathabundance.community.relab 1 pathabundance.tsv.10filter >pathabundance.community.relab10
+perl /home/ping/bin/filter_ave_10.pl genefamily.tsv
+perl /home/ping/bin/filter_ave_10.pl genefamily.uniref90_eggnog
+perl /home/ping/bin/filter_ave_10.pl genefamily.uniref90_go
+perl /home/ping/bin/filter_ave_10.pl genefamily.uniref90_ko
+perl /home/ping/bin/filter_ave_10.pl genefamily.uniref90_level4ec
+perl /home/ping/bin/filter_ave_10.pl genefamily.uniref90_pfam
+perl /home/ping/bin/filter_ave_10.pl genefamily.uniref90_rxn
+
+perl /home/ping/bin/select_data.pl genefamily.community.uniref90_eggnog.relab 1 genefamily.uniref90_eggnog.10filter >genefamily.community.uniref90_eggnog.relab10
+perl /home/ping/bin/select_data.pl genefamily.community.uniref90_go.relab 1 genefamily.uniref90_go.10filter >genefamily.community.uniref90_go.relab10
+perl /home/ping/bin/select_data.pl genefamily.community.uniref90_ko.relab 1 genefamily.uniref90_ko.10filter >genefamily.community.uniref90_ko.relab10
+perl /home/ping/bin/select_data.pl genefamily.community.uniref90_level4ec.relab 1 genefamily.uniref90_level4ec.10filter >genefamily.community.uniref90_level4ec.relab10
+perl /home/ping/bin/select_data.pl genefamily.community.uniref90_level4ec.relab 1 genefamily.uniref90_level4ec.10filter >genefamily.community.uniref90_level4ec.relab10
+perl /home/ping/bin/select_data.pl genefamily.community.uniref90_pfam.relab 1 genefamily.uniref90_pfam.10filter >genefamily.community.uniref90_pfam.relab10
+perl /home/ping/bin/select_data.pl genefamily.community.uniref90_prxn.relab 1 genefamily.uniref90_rxn.10filter >genefamily.community.uniref90_rxn.relab10
+perl /home/ping/bin/select_data.pl genefamily.community.uniref90_rxn.relab 1 genefamily.uniref90_rxn.10filter >genefamily.community.uniref90_rxn.relab10
+perl /home/ping/bin/select_data.pl genefamily.community.relab 1 genefamily.tsv.10filter >genefamily.community.relab10
+
+humann_rename_table --input genefamily.community.uniref90_rxn.relab10 --output genefamily.community.uniref90_rxn.relab10.name.xls --names metacyc-rxn
+humann_rename_table --input genefamily.community.uniref90_level4ec.relab10 --output genefamily.community.uniref90_level4ec.relab10.name.xls --names ec
+humann_rename_table --input genefamily.community.uniref90_go.relab10 --output genefamily.community.uniref90_go.relab10.name.xls --names go
+humann_rename_table --input genefamily.community.uniref90_ko.relab10 --output genefamily.community.uniref90_ko.relab10.name.xls --names kegg-orthology
+humann_rename_table --input genefamily.community.uniref90_eggnog.relab10 --output genefamily.community.uniref90_eggnog.relab10.name.xls --names eggnog
+humann_rename_table --input genefamily.community.uniref90_pfam.relab10 --output genefamily.community.uniref90_pfam.relab10.name.xls --names pfam
+
+
+humann_rename_table --input genefamily.community.relab10 --output genefamily.community.relab10.name.xls --names uniref90
+
+##########################
+cd ../kraken_fungi2019DB/
+python /home/ping/bin/merge_kraken2_report.py *.report > kraken_fungi18DB_summary
+perl /home/ping/bin/clean_kraken_data.pl kraken_fungi18DB_summary
+#perl /home/ping/bin/get_relab_kraken.pl ../count/merge2.readsnum kraken_fungi18DB_summary.clean 1>out 2>err
+ls *.err > err.list
+perl /home/ping/bin/combine_multi_file.pl err.list > kraken.err.combine.xls
+
+grep process kraken.err.combine.xls >tmp1
+grep ' classified' kraken.err.combine.xls >tmp2
+grep unclassified kraken.err.combine.xls >tmp3
+cut -f1 -d'.' tmp1 >tmp1.1
+cut -f2 tmp1|cut -f1 -d" " >tmp1.2
+cut -f2 tmp2|cut -f3 -d" " >tmp2.1
+cut -f2 tmp2|cut -f6 -d" " |cut -f2 -d"("|cut -f1 -d")" >tmp2.2
+cut -f2 tmp3|cut -f3 -d" " >tmp3.1
+cut -f2 tmp3|cut -f6 -d" " |cut -f2 -d"("|cut -f1 -d")" >tmp3.2
+paste tmp1 tmp2 tmp3 tmp1.1 tmp1.2 tmp2.1 tmp2.2 tmp3.1 tmp3.2 >kraken_reads.xls
+rm tmp*
+
+
+#####column9 is matched reads use this as total for calculation############
+perl /home/ping/bin/get_relab_kraken_matched.pl kraken_reads.xls 9 kraken_fungi18DB_summary.clean
+mv kraken_fungi18DB_summary.clean.relab kraken_fungi18DB_summary.matched.relab
+perl /home/ping/bin/get_relab_kraken_matched.pl kraken_reads.xls 8 kraken_fungi18DB_summary.clean
+mv kraken_fungi18DB_summary.clean.relab kraken_fungi18DB_summary.allreads.relab
+
+################################################################################
