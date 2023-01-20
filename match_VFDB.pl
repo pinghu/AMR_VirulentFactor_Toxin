@@ -23,7 +23,7 @@ open (B, ">$file.ann.xls")||die "could not open $file.ann.xls\n";
 my $x=<A>;
 chomp $x;
 for($x){s/\r//gi;}
-print B $x, "ID\tgenbank\tgene_name\tcategory1\tcategory2\tSpecies\n", ;
+print B $x, "\tID\tgenbank\tgene_name\tcategory1\tcategory2\tSpecies\n", ;
 
 while (my $a=<A>){
     chomp $a;
